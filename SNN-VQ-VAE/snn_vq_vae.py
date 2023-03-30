@@ -29,9 +29,6 @@ class VectorQuantizer(nn.Module):
         self.commitment_cost = commitment_cost # β 损失最后一项 约束项 0.25
         self.memout = MembraneOutputLayer()
         self.num_step = 16
-        # 用于将离散的输入（如单词或类别）映射到低维空间中的连续向量表示
-        # 输入是num_embeddings输出是embedding_dim
-        # 意思是，例如输入形状为[num_embeddings = 10],则输出形状为[10,embedding_dim = 128]
         self.embeddings = nn.Embedding(self.num_embeddings, self.embedding_dim)
 
         self.poisson = tdConv(16,
@@ -43,14 +40,13 @@ class VectorQuantizer(nn.Module):
                         bn=tdBatchNorm(16),
                         spike=LIFSpike(),
                         is_first_conv=True)
-        # 因此其参数形状即为[10 x 128]，参数构成了所需要的向量空间，非常巧妙，并不用作直接处理数据
 
     def forward(self, x):
         # (N,C,H,W,T)->(N,C,H,W)
         
         #x_memout = torch.sum(x,dim=-1)/self.num_step
         x_memout = self.memout(x)
-        # channel 挪到最后
+
         # # [128, 16, 7, 7] -> [128, 7, 7,16]
         x_memout = x_memout.permute(0, 2, 3, 1).contiguous()
 
@@ -59,16 +55,8 @@ class VectorQuantizer(nn.Module):
         # [128, 7, 7,16] -> [6272, 16]
         flat_x = x_memout.reshape(-1, self.embedding_dim)
 
-        # 将flat_x去和潜在空间中存的向量去比较，得到编码索引，形状为[BHW]，每个维度获得了一个索引
-        # encoding_indices是离散值，形状latent-dim
         encoding_indices = self.get_code_indices(flat_x)
-
-        # 输出形状[6272]——128个图片，每个图片有7x7=49个维度，每个维度的向量长度为16
-        # 因此该输出将每个维度的长度为16的向量编码为单个索引
-
         quantized = self.quantize(encoding_indices)
-        #再将索引转为编码，输出形状[6272,16]
-
         quantized = quantized.view_as(x_memout) # [128, 7, 7,16]
         
 
@@ -141,14 +129,6 @@ class Encoder(nn.Module):
         self.latent_dim = latent_dim
         
         is_first_conv = True
-        self.convs = nn.Sequential(
-            nn.Conv2d(in_dim, 32, 3, stride=2, padding=1),
-            nn.ReLU(inplace=True),
-            nn.Conv2d(32, 64, 3, stride=2, padding=1),
-            nn.ReLU(inplace=True),
-            nn.Conv2d(64, latent_dim, 1),
-        )
-
         self.snn_convs = nn.Sequential(
             tdConv(in_dim,
                         out_channels=32,
@@ -190,15 +170,6 @@ class Decoder(nn.Module):
         super().__init__()
         self.out_dim = out_dim
         self.latent_dim = latent_dim
-        
-        self.convs = nn.Sequential(
-            nn.ConvTranspose2d(latent_dim, 64, 3, stride=2, padding=1, output_padding=1),
-            nn.ReLU(inplace=True),
-            nn.ConvTranspose2d(64, 32, 3, stride=2, padding=1, output_padding=1),
-            nn.ReLU(inplace=True),
-            nn.ConvTranspose2d(32, out_dim, 3, padding=1),
-        )
-        
         self.snn_convs = nn.Sequential(
             tdConvTranspose(latent_dim,
                                     64,
