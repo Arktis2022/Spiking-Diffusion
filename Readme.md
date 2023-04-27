@@ -1,5 +1,2 @@
-Full spike vq-vae implementation
-
-Plan to submit to NIPS2023
-
-Full code coming soon
+Implementation of "Spiking-Diffusion: Vector Quantized Discrete Diffusion Model with Spiking Neural Networks"
+Code coming soon
