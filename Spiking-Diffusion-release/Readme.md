@@ -26,11 +26,13 @@ python -u main.py --dataset_name MNIST --model snn-vq-vae --checkpoint [path to 
 ### Contact Information
 
 ```
-@article{liu2023spiking,
-  title={Spiking-Diffusion: Vector Quantized Discrete Diffusion Model with Spiking Neural Networks},
-  author={Liu, Mingxuan and Wen, Rui and Chen, Hong},
-  journal={arXiv preprint arXiv:2308.10187},
-  year={2023}
+@misc{liu2023spikingdiffusion,
+      title={Spiking-Diffusion: Vector Quantized Discrete Diffusion Model with Spiking Neural Networks}, 
+      author={Mingxuan Liu and Jie Gan and Rui Wen and Tao Li and Yongli Chen and Hong Chen},
+      year={2023},
+      eprint={2308.10187},
+      archivePrefix={arXiv},
+      primaryClass={cs.NE}
 }
 ```
 
