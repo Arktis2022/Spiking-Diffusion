@@ -1,0 +1,22 @@
+cd /data/liumingxuan/Spiking-Diffusion
+CUDA_VISIBLE_DEVICES=3
+train:
+    snn-vq-vae:
+        python -u main.py --dataset_name MNIST --model snn-vq-vae  
+    snn-vq-vae-uni:
+        python -u main.py --dataset_name MNIST --model snn-vq-vae-uni  
+    snn-vae: 
+        python -u main.py --dataset_name MNIST --model snn-vae
+    vq-vae:
+        python -u main.py --dataset_name MNIST --model vq-vae
+test:
+    snn-vq-vae:
+        python -u main.py --dataset_name MNIST --model snn-vq-vae --checkpoint /data/liumingxuan/Spiking-Diffusion/result/MNIST/snn-vq-vae/model.pth
+    snn-vae:
+        python -u main.py --dataset_name MNIST --model snn-vae --checkpoint 
+    vq-vae:
+        python -u main.py --dataset_name KMNIST --model vq-vae --checkpoint
+
+vq-vae-ready:
+    snn-vq-vae:
+        CUDA_VISIBLE_DEVICES=3 nohup python -u main.py --dataset_name MNIST --model snn-vq-vae --ready /data/liumingxuan/Spiking-Diffusion/the_best/diff_model_orig/result/MNIST/snn-vq-vae/model.pth
