@@ -12,22 +12,19 @@ def load_mnist(data_path,batch_size):
     #print("loading MNIST")
     if not os.path.exists(data_path):
         os.mkdir(data_path)
-    
-    # 从config中拿到batch_size和input_size两个数据
+
     batch_size = batch_size
     input_size = 28
     
-    # 对X进行操作，所有的值X2-1，这是为啥？
     #SetRange = transforms.Lambda(lambda X: 2 * X - 1.)
     
-    # 先resize，再X2-1
+
     transform_train = transforms.Compose([
         #transforms.Resize((input_size,input_size)),
         transforms.ToTensor(),
         #SetRange
     ])
     
-    # 对于test的处理相同
     transform_test = transforms.Compose([
         #transforms.Resize((input_size,input_size)),
         transforms.ToTensor(),
@@ -127,29 +124,25 @@ def load_celebA(data_path,batch_size):
                                             batch_size=batch_size, 
                                             shuffle=False, num_workers=8, pin_memory=True)
     return trainloader, testloader
-
-
-# 加载KMNIST数据集      
+ 
 def load_KMNIST(data_path,batch_size):
     #print("loading KMNIST")
     if not os.path.exists(data_path):
         os.mkdir(data_path)
-    
-    # 从config中拿到batch_size和input_size两个数据
+
     batch_size = batch_size
     input_size = 28
     
-    # 对X进行操作，所有的值X2-1，这是为啥？
+
     #SetRange = transforms.Lambda(lambda X: 2 * X - 1.)
-    
-    # 先resize，再X2-1
+
     transform_train = transforms.Compose([
         #transforms.Resize((input_size,input_size)),
         transforms.ToTensor(),
         #SetRange
     ])
     
-    # 对于test的处理相同
+
     transform_test = transforms.Compose([
         #transforms.Resize((input_size,input_size)),
         transforms.ToTensor(),
@@ -382,7 +375,6 @@ def load_notMNIST(data_path, samples_per_class=1000):
     )
     return loader    
 
-# 加载MNIST-c数据集
 class MNIST_C(VisionDataset):
     def __init__(self, root_dir, transform=None):
         """
