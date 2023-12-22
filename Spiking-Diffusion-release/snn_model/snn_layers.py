@@ -3,7 +3,6 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 
-# 模拟突触后电位
 class PSP(torch.nn.Module):
     def __init__(self):
         super().__init__()
@@ -27,10 +26,6 @@ class PSP(torch.nn.Module):
         return syns
 
 class MembraneOutputLayer(nn.Module):
-    """
-    outputs the last time membrane potential of the LIF neuron with V_th=infty
-    输出LIF神经元的最后一次膜电位，V_th=infty
-    """
     def __init__(self) -> None:
         super().__init__()
         n_steps = 16
